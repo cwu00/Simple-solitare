@@ -1,4 +1,5 @@
 from deque_class import Deque
+
 class Solitaire:
     def __init__(self, ncards):
         self.t = []
@@ -69,6 +70,7 @@ class Solitaire:
                     print("You Lose!")
         print()
 
-'''cards = [5, 9, 8, 7, 1, 2, 0, 3, 4, 6]
+cards = [3,2,4,0,1]
 game = Solitaire(cards)
-game.play()'''
+game.play()
+
