@@ -71,34 +71,41 @@ class Solitaire:
     def check_c1(self):
         global game_iter
         global real_game
+        if game_iter == real_game.__ChanceNo:
+                print("\nYou Lose!\n\n")
+                ncards_entry.focus_set()
+                return
         try:
             c1 = int(from_pile_entry.get())
-            to_pile_entry.focus_set()
             if c1 >= real_game.__ColNo:
                 raise Exception
+            to_pile_entry.focus_set()
         except:
             print("INVALID PILE NUMBER")
             game_iter += 1
             count_label.config(text=game_iter)
             from_pile_entry.delete("0", tk.END)
-            
             
     def check_c2(self):
         global game_iter
         global real_game
+        if game_iter == real_game.__ChanceNo:
+                print("\nYou Lose!\n\n")
+                ncards_entry.focus_set()
+                return
         try:
             c2 = int(to_pile_entry.get())
-            from_pile_entry.focus_set()
+            if c2 >= real_game.__ColNo:
+                raise Exception
             game_iter += 1
             count_label.config(text=game_iter)
             real_game.both_valid()
-            if c2 >= real_game.__ColNo:
-                raise Exception
+            from_pile_entry.focus_set()
         except:
             print("INVALID PILE NUMBER")
             game_iter += 1
             count_label.config(text=game_iter)
-            from_pile_entry.delete("0", tk.END)
+            to_pile_entry.delete("0", tk.END)
 
     def both_valid(self):
         global game_iter
@@ -125,9 +132,8 @@ class Solitaire:
     def set_cursor_to_pile(self):
         to_pile_entry.focus_set()
 
-
 ###CREATIVE EXTENSION###
-class Ranking():
+class Ranking:
     def __init__(self):
         prompt_window = Toplevel(simple_solitaire)
         prompt_window.title("Username Entry")
@@ -167,6 +173,16 @@ class Ranking():
         self.into_json(ranking)                                                     #stores the scores into json file
         self.destroy_entry_window()                                                   #closes the pop up window prompt
 
+class Undo:
+    def __init__(self):
+        self.stack = []
+    def push(self, move_list):
+        self.stack.append([move for move in move_list])
+    def is_empty(self):
+        return len(self.stack) == 0
+    def pop(self):
+        self.stack.pop()
+
 def show_ranking():
     with open('scores.txt') as json_file:
         ranking = json.load(json_file)
@@ -174,11 +190,14 @@ def show_ranking():
     try:
         ranking_display = [[name, str(value)] for name, value in ranking[items_played_with].items()]
         sorted_ranking = sorted(ranking_display, key=itemgetter(1))
-        print("Ranking with {} items".format(items_played_with))
+        print("Ranking with {} items\n".format(items_played_with))
+        rank_num = 1
         for player in sorted_ranking:
             name, score = player
+            print("{:<5}".format(rank_num), end='')
             print("{:<15}".format(name), end = '')
             print(score)
+            rank_num += 1
     except KeyError:
         print("No one has played with this many items! \n"\
             "You could be a history maker!")
@@ -189,7 +208,12 @@ def new_game():
     game_iter = 0
     from_pile_entry.focus_set()                         #set focus to (move from) entry box
     deal = []
-    total_num = int(ncards_entry.get())                 #gets user input of number of cards
+    try:
+        total_num = int(ncards_entry.get())                 #gets user input of number of cards
+    except:
+        print("Invalid input\nRefer to HELP for instructions.")
+        ncards_entry.focus_set()
+        return
     move_available = total_num*2                        #calculates total moves available
     move_available_label.config(text=move_available)    #shows moves availble on screen
     for i in range(1,total_num+1):
@@ -200,8 +224,8 @@ def new_game():
     print("**************************NEW GAME**************************")
     real_game.display()                                 ###change this to play when everything works###
 
-def undo():
-    print("UNDO")
+def undo_call():
+    pass
 
 def help_func():
     rules = "This is a simplified version of the classic game of Solitaire.\n"\
@@ -259,7 +283,7 @@ to_pile_entry.bind("<Return>", Solitaire.check_c2)                #solitaire cla
 game = tk.Text(game_frame)
 game.pack(fill=X)
 
-undo_button = tk.Button(option_frame, text="UNDO", command=undo)
+undo_button = tk.Button(option_frame, text="UNDO", command=undo_call)
 undo_button.pack(side=LEFT, ipadx=5, padx=8)
 
 help_button = tk.Button(option_frame, text="HELP", command=help_func)
@@ -273,7 +297,6 @@ ncards_label2.pack(side=RIGHT)
 
 ncards_entry = tk.Entry(option_frame, width=3)
 ncards_entry.pack(side=RIGHT)
-ncards_entry.insert(0,3)
 ncards_entry.focus_set()                                        #sets the focus on entry
 
 ncards_label1 = tk.Label(option_frame, text="Playing with")
