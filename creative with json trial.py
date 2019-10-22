@@ -40,6 +40,7 @@ class Solitaire:
                 print("{}: ".format(i), end = '')
             self.t[i].printall(i)
         print("")
+        game.see(tk.END)
 
     def move(self, c1, c2):
         if c1 == c2 and c1 == 0: #always valid
@@ -74,6 +75,7 @@ class Solitaire:
         if game_iter == real_game.__ChanceNo:
                 print("\nYou Lose!\n\n")
                 ncards_entry.focus_set()
+                game.see(tk.END)
                 return
         try:
             c1 = int(from_pile_entry.get())
@@ -85,6 +87,8 @@ class Solitaire:
             game_iter += 1
             count_label.config(text=game_iter)
             from_pile_entry.delete("0", tk.END)
+        finally:
+            game.see(tk.END)
             
     def check_c2(self):
         global game_iter
@@ -92,6 +96,7 @@ class Solitaire:
         if game_iter == real_game.__ChanceNo:
                 print("\nYou Lose!\n\n")
                 ncards_entry.focus_set()
+                game.see(tk.END)
                 return
         try:
             c2 = int(to_pile_entry.get())
@@ -106,6 +111,8 @@ class Solitaire:
             game_iter += 1
             count_label.config(text=game_iter)
             to_pile_entry.delete("0", tk.END)
+        finally:
+            game.see(tk.END)
 
     def both_valid(self):
         global game_iter
@@ -201,6 +208,8 @@ def show_ranking():
     except KeyError:
         print("No one has played with this many items! \n"\
             "You could be a history maker!")
+    finally:
+        game.see(tk.END)
 
 def new_game():
     global game_iter
@@ -214,6 +223,8 @@ def new_game():
         print("Invalid input\nRefer to HELP for instructions.")
         ncards_entry.focus_set()
         return
+    finally:
+        game.see(tk.END)
     move_available = total_num*2                        #calculates total moves available
     move_available_label.config(text=move_available)    #shows moves availble on screen
     for i in range(1,total_num+1):
