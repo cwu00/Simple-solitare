@@ -1,7 +1,16 @@
+"""
+Charmaine Wu
+twu 268     928887253
+This is a basic simple solitaire game. 
+This program contains the deque class which establishes the card piles;
+and the solitaire class that carries the basic functions of the game.
+"""
+
+
 class Deque:
     def __init__(self):
         #use python list structure
-        # index 0 is rear, index[-1] is front
+        #index 0 is rear, index[-1] is front
         self.items = []
 
     def add_front(self, item): 
