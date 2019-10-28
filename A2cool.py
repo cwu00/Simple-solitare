@@ -180,7 +180,7 @@ class Ranking:
         self.window.destroy()                                                    #closes the pop up window prompt
         ncards_entry.focus_set()                                                 #sets cursor to the item number entry for next round
 
-def show_ranking():h 
+def show_ranking():
     with open('scores.txt') as json_file:
         ranking = json.load(json_file)
     items_played_with = ncards_entry.get()
@@ -236,6 +236,7 @@ def new_game():
     global game_iter
     global real_game
     game_iter = 0
+    count_label.config(text=game_iter)
     from_pile_entry.focus_set()                         #set focus to (move from) entry box
     deal = []
     try:
@@ -255,7 +256,7 @@ def new_game():
         deal.append(i)
     random.shuffle(deal)                                #shuffles cards 
     real_game = Solitaire(deal)
-    print("**************************NEW GAME**************************")
+    print("*************************NEW GAME**************************")
     real_game.display()
 
 def help_func():
@@ -278,8 +279,6 @@ def help_func():
                         "you can place it at the bottom of the foundation pile by moving from pile 0 to pile 0.\n"\
                             
     tk.messagebox.showinfo("HELP", rules)
-
-    pass
 
 simple_solitaire = tk.Tk()
 simple_solitaire.geometry("480x430+500+200")
